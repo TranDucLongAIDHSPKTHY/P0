@@ -15,7 +15,6 @@ import utility.utility_data.data_loader as data_loader
 import utility.utility_function.tools as tools
 import utility.utility_train.batch_test as batch_test
 from config_path.config_path import (
-    PROJECT_ROOT,
     model_config_file,
     model_result_dir,
     training_log_file,
@@ -33,9 +32,7 @@ MODEL_LIST = {
 }
 
 
-def configure_training_logging(project_root):
-    log_path = training_log_file()
-    log_path.parent.mkdir(parents=True, exist_ok=True)
+def configure_training_logging(model_name=None):
     formatter = logging.Formatter(
         "%(asctime)s | %(levelname)s | %(module)s | %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
@@ -47,10 +44,15 @@ def configure_training_logging(project_root):
         handler.close()
     console = logging.StreamHandler(sys.stdout)
     console.setFormatter(formatter)
-    logfile = logging.FileHandler(log_path, mode="a", encoding="utf-8")
-    logfile.setFormatter(formatter)
     root_logger.addHandler(console)
-    root_logger.addHandler(logfile)
+
+    log_path = None
+    if model_name is not None:
+        log_path = training_log_file(model_name)
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        logfile = logging.FileHandler(log_path, mode="a", encoding="utf-8")
+        logfile.setFormatter(formatter)
+        root_logger.addHandler(logfile)
     return logging.getLogger("training"), log_path
 
 
@@ -66,15 +68,15 @@ def select_model(args, logger):
 
 
 def main():
-    project_root = PROJECT_ROOT
-    logger, log_path = configure_training_logging(project_root)
     started_at = time()
     dataset = None
-    logger.info("Start Training")
-    logger.info("Training log: %s", log_path)
+    logger, _ = configure_training_logging()
     try:
         preliminary_args = Parser.parse_model_args()
         model_name = select_model(preliminary_args, logger)
+        logger, log_path = configure_training_logging(model_name)
+        logger.info("Start Training")
+        logger.info("Training log: %s", log_path)
         config_path = model_config_file(model_name)
         config = tools.read_configuration(str(config_path), model_name)
         args = Parser.parse_args(config)

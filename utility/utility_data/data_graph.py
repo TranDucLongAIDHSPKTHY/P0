@@ -8,6 +8,36 @@ warnings.filterwarnings('ignore')
 logger = logging.getLogger(__name__)
 
 
+def _build_bipartite_adjacency(data):
+    """Build [[0, R], [R.T, 0]] without materializing a dense user-item block."""
+    interaction_matrix = data.user_item_net.tocsr().astype(np.float32, copy=False)
+    adjacency_matrix = sp.bmat(
+        [[None, interaction_matrix], [interaction_matrix.T, None]],
+        format="csr",
+        dtype=np.float32,
+    )
+    expected_nonzero = 2 * interaction_matrix.nnz
+    if adjacency_matrix.shape != (data.num_nodes, data.num_nodes):
+        raise ValueError(
+            "Unexpected adjacency shape: {} instead of {}".format(
+                adjacency_matrix.shape, (data.num_nodes, data.num_nodes)
+            )
+        )
+    if adjacency_matrix.nnz != expected_nonzero:
+        raise ValueError(
+            "Unexpected adjacency nonzero count: {} instead of {}".format(
+                adjacency_matrix.nnz, expected_nonzero
+            )
+        )
+    logger.info(
+        "Sparse bipartite adjacency assembled: shape=%s nonzero=%d dtype=%s",
+        adjacency_matrix.shape,
+        adjacency_matrix.nnz,
+        adjacency_matrix.dtype,
+    )
+    return adjacency_matrix
+
+
 def sparse_adjacency_matrix_with_self(data):
     try:
         norm_adjacency = sp.load_npz(adjacency_cache_file(data.path, "with_self"))
@@ -17,13 +47,7 @@ def sparse_adjacency_matrix_with_self(data):
             logger.info("Adjacency cache not found; building pre_A_with_self.npz")
         else:
             logger.exception("Unable to load pre_A_with_self.npz; rebuilding adjacency matrix")
-        adjacency_matrix = sp.dok_matrix((data.num_nodes, data.num_nodes), dtype=np.float32)
-        adjacency_matrix = adjacency_matrix.tolil()
-        R = data.user_item_net.todok()
-
-        adjacency_matrix[:data.num_users, data.num_users:] = R
-        adjacency_matrix[data.num_users:, :data.num_users] = R.T
-        adjacency_matrix = adjacency_matrix.todok()
+        adjacency_matrix = _build_bipartite_adjacency(data)
         adjacency_matrix = adjacency_matrix + sp.eye(adjacency_matrix.shape[0])
 
         row_sum = np.array(adjacency_matrix.sum(axis=1))
@@ -47,13 +71,7 @@ def sparse_adjacency_matrix(data):
             logger.info("Adjacency cache not found; building pre_A.npz")
         else:
             logger.exception("Unable to load pre_A.npz; rebuilding adjacency matrix")
-        adjacency_matrix = sp.dok_matrix((data.num_nodes, data.num_nodes), dtype=np.float32)
-        adjacency_matrix = adjacency_matrix.tolil()
-        R = data.user_item_net.todok()
-
-        adjacency_matrix[:data.num_users, data.num_users:] = R
-        adjacency_matrix[data.num_users:, :data.num_users] = R.T
-        adjacency_matrix = adjacency_matrix.todok()
+        adjacency_matrix = _build_bipartite_adjacency(data)
 
         row_sum = np.array(adjacency_matrix.sum(axis=1))
         d_inv = np.power(row_sum, -0.5).flatten()

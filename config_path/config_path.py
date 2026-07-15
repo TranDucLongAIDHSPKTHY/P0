@@ -156,8 +156,8 @@ def model_result_dir(model_name, dataset_name):
     return MODEL_OUTPUT_DIR / str(model_name) / str(dataset_name)
 
 
-def training_log_file():
-    return TRAINING_LOG_DIR / TRAINING_LOG_FILE_NAME
+def training_log_file(model_name):
+    return TRAINING_LOG_DIR / str(model_name) / TRAINING_LOG_FILE_NAME
 
 
 def checkpoint_file(output_dir, checkpoint_kind):
