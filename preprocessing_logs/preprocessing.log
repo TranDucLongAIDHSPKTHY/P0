@@ -1,0 +1,96 @@
+2026-07-15 12:41:18 | INFO | preprocessing_data | Start preprocessing
+2026-07-15 12:41:18 | INFO | preprocessing_data | Project root: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL
+2026-07-15 12:41:18 | INFO | preprocessing_data | Output directory: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\preprocessed
+2026-07-15 12:41:18 | INFO | preprocessing_data | Model-ready dataset directory: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\dataset_verify
+2026-07-15 12:41:18 | INFO | preprocessing_data | Configuration: domains=('amazon', 'yelp') strategy=primary seeds=[42, 123, 2026] dataset_seed=42
+2026-07-15 12:41:18 | INFO | preprocessing_data | [amazon] Loading dataset
+2026-07-15 12:41:20 | INFO | preprocessing_data | [amazon] Applying 5-core filtering
+2026-07-15 12:41:29 | INFO | preprocessing_data | [amazon] 5-core filtering completed: users 52643->52642, items 91599->88416, interactions 2380730->2372615, iterations=3
+2026-07-15 12:41:30 | INFO | preprocessing_data | [amazon] Loading merged metadata: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\merged_metadata_amazon.json
+2026-07-15 12:41:41 | INFO | preprocessing_data | Loaded taxonomy for 88416/88416 active items
+2026-07-15 12:41:41 | INFO | preprocessing_data | [amazon] Building taxonomy
+2026-07-15 12:41:42 | INFO | preprocessing_data | [amazon] Merging small leaf categories
+2026-07-15 12:41:43 | INFO | preprocessing_data | [amazon] Building item2category
+2026-07-15 12:41:48 | INFO | preprocessing_data | Saved E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\item2category_amazon.json (50329193 bytes)
+2026-07-15 12:41:48 | INFO | preprocessing_data | [amazon] Generating visualization
+2026-07-15 12:41:50 | INFO | preprocessing_data | [amazon] Visualization saved: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\preprocessed\taxonomy_distribution_amazon.png
+2026-07-15 12:41:50 | INFO | preprocessing_data | [amazon] Creating train/validation split
+2026-07-15 12:41:59 | INFO | preprocessing_data | [amazon] Exported model-ready dataset seed 42: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\dataset_verify\amazon-book
+2026-07-15 12:41:59 | INFO | preprocessing_data | [amazon] Computing cold-start statistics for seed 42
+2026-07-15 12:42:08 | INFO | preprocessing_data | [amazon] Computing cold-start statistics for seed 123
+2026-07-15 12:42:16 | INFO | preprocessing_data | [amazon] Computing cold-start statistics for seed 2026
+2026-07-15 12:42:17 | INFO | preprocessing_data | [amazon] Running Gate G1
+2026-07-15 12:42:17 | INFO | preprocessing_data | [amazon] Gate G1: PASS - Tất cả kiểm tra Gate G1 đều đạt
+2026-07-15 12:42:17 | INFO | preprocessing_data | [amazon] Saving output files
+2026-07-15 12:42:18 | INFO | preprocessing_data | [yelp] Loading dataset
+2026-07-15 12:42:19 | INFO | preprocessing_data | [yelp] Applying 5-core filtering
+2026-07-15 12:42:22 | INFO | preprocessing_data | [yelp] 5-core filtering completed: users 31668->31668, items 38048->37381, interactions 1237259->1235307, iterations=2
+2026-07-15 12:42:22 | INFO | preprocessing_data | [yelp] Loading merged metadata: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\merged_metadata_yelp.json
+2026-07-15 12:42:25 | INFO | preprocessing_data | Loaded taxonomy for 37381/37381 active items
+2026-07-15 12:42:25 | INFO | preprocessing_data | [yelp] Building taxonomy
+2026-07-15 12:42:25 | INFO | preprocessing_data | [yelp] Merging small leaf categories
+2026-07-15 12:42:25 | INFO | preprocessing_data | [yelp] Building item2category
+2026-07-15 12:42:27 | INFO | preprocessing_data | Saved E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\item2category_yelp.json (14150917 bytes)
+2026-07-15 12:42:27 | INFO | preprocessing_data | [yelp] Generating visualization
+2026-07-15 12:42:28 | INFO | preprocessing_data | [yelp] Visualization saved: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\preprocessed\taxonomy_distribution_yelp.png
+2026-07-15 12:42:28 | INFO | preprocessing_data | [yelp] Creating train/validation split
+2026-07-15 12:42:32 | INFO | preprocessing_data | [yelp] Exported model-ready dataset seed 42: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\dataset_verify\yelp2018
+2026-07-15 12:42:32 | INFO | preprocessing_data | [yelp] Computing cold-start statistics for seed 42
+2026-07-15 12:42:37 | INFO | preprocessing_data | [yelp] Computing cold-start statistics for seed 123
+2026-07-15 12:42:41 | INFO | preprocessing_data | [yelp] Computing cold-start statistics for seed 2026
+2026-07-15 12:42:41 | INFO | preprocessing_data | [yelp] Running Gate G1
+2026-07-15 12:42:41 | INFO | preprocessing_data | [yelp] Gate G1: PASS - Tất cả kiểm tra Gate G1 đều đạt
+2026-07-15 12:42:41 | INFO | preprocessing_data | [yelp] Saving output files
+2026-07-15 12:42:42 | INFO | preprocessing_data | Saving summary
+2026-07-15 12:42:42 | INFO | preprocessing_data | Saved E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\preprocessed\preprocessing_summary.json (264255 bytes)
+2026-07-15 12:42:42 | INFO | preprocessing_data | Saved E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\preprocessed\preprocessing_summary.md (2213 bytes)
+2026-07-15 12:42:42 | INFO | preprocessing_data | Gate G1 overall: PASS
+2026-07-15 12:42:42 | INFO | preprocessing_data | Finished preprocessing
+2026-07-15 12:44:04 | INFO | preprocessing_data | Start preprocessing
+2026-07-15 12:44:04 | INFO | preprocessing_data | Project root: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL
+2026-07-15 12:44:04 | INFO | preprocessing_data | Output directory: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\preprocessed
+2026-07-15 12:44:04 | INFO | preprocessing_data | Model-ready dataset directory: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\dataset_verify
+2026-07-15 12:44:04 | INFO | preprocessing_data | Configuration: domains=('amazon', 'yelp') strategy=primary seeds=[42, 123, 2026] dataset_seed=42
+2026-07-15 12:44:04 | INFO | preprocessing_data | [amazon] Loading dataset
+2026-07-15 12:44:06 | INFO | preprocessing_data | [amazon] Applying 5-core filtering
+2026-07-15 12:44:15 | INFO | preprocessing_data | [amazon] 5-core filtering completed: users 52643->52642, items 91599->88416, interactions 2380730->2372615, iterations=3
+2026-07-15 12:44:16 | INFO | preprocessing_data | [amazon] Loading merged metadata: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\merged_metadata_amazon.json
+2026-07-15 12:44:26 | INFO | preprocessing_data | Loaded taxonomy for 88416/88416 active items
+2026-07-15 12:44:26 | INFO | preprocessing_data | [amazon] Building taxonomy
+2026-07-15 12:44:27 | INFO | preprocessing_data | [amazon] Merging small leaf categories
+2026-07-15 12:44:28 | INFO | preprocessing_data | [amazon] Building item2category
+2026-07-15 12:44:33 | INFO | preprocessing_data | Saved E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\item2category_amazon.json (50329193 bytes)
+2026-07-15 12:44:33 | INFO | preprocessing_data | [amazon] Generating visualization
+2026-07-15 12:44:35 | INFO | preprocessing_data | [amazon] Visualization saved: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\preprocessed\taxonomy_distribution_amazon.png
+2026-07-15 12:44:35 | INFO | preprocessing_data | [amazon] Creating train/validation split
+2026-07-15 12:44:43 | INFO | preprocessing_data | [amazon] Exported model-ready dataset seed 42: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\dataset_verify\amazon-book
+2026-07-15 12:44:44 | INFO | preprocessing_data | [amazon] Computing cold-start statistics for seed 42
+2026-07-15 12:44:52 | INFO | preprocessing_data | [amazon] Computing cold-start statistics for seed 123
+2026-07-15 12:45:00 | INFO | preprocessing_data | [amazon] Computing cold-start statistics for seed 2026
+2026-07-15 12:45:00 | INFO | preprocessing_data | [amazon] Running Gate G1
+2026-07-15 12:45:01 | INFO | preprocessing_data | [amazon] Gate G1: PASS - Tất cả kiểm tra Gate G1 đều đạt
+2026-07-15 12:45:01 | INFO | preprocessing_data | [amazon] Saving output files
+2026-07-15 12:45:01 | INFO | preprocessing_data | [yelp] Loading dataset
+2026-07-15 12:45:02 | INFO | preprocessing_data | [yelp] Applying 5-core filtering
+2026-07-15 12:45:06 | INFO | preprocessing_data | [yelp] 5-core filtering completed: users 31668->31668, items 38048->37381, interactions 1237259->1235307, iterations=2
+2026-07-15 12:45:06 | INFO | preprocessing_data | [yelp] Loading merged metadata: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\merged_metadata_yelp.json
+2026-07-15 12:45:09 | INFO | preprocessing_data | Loaded taxonomy for 37381/37381 active items
+2026-07-15 12:45:09 | INFO | preprocessing_data | [yelp] Building taxonomy
+2026-07-15 12:45:10 | INFO | preprocessing_data | [yelp] Merging small leaf categories
+2026-07-15 12:45:10 | INFO | preprocessing_data | [yelp] Building item2category
+2026-07-15 12:45:12 | INFO | preprocessing_data | Saved E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\item2category_yelp.json (14150917 bytes)
+2026-07-15 12:45:12 | INFO | preprocessing_data | [yelp] Generating visualization
+2026-07-15 12:45:13 | INFO | preprocessing_data | [yelp] Visualization saved: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\preprocessed\taxonomy_distribution_yelp.png
+2026-07-15 12:45:13 | INFO | preprocessing_data | [yelp] Creating train/validation split
+2026-07-15 12:45:18 | INFO | preprocessing_data | [yelp] Exported model-ready dataset seed 42: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\dataset_verify\yelp2018
+2026-07-15 12:45:18 | INFO | preprocessing_data | [yelp] Computing cold-start statistics for seed 42
+2026-07-15 12:45:23 | INFO | preprocessing_data | [yelp] Computing cold-start statistics for seed 123
+2026-07-15 12:45:27 | INFO | preprocessing_data | [yelp] Computing cold-start statistics for seed 2026
+2026-07-15 12:45:28 | INFO | preprocessing_data | [yelp] Running Gate G1
+2026-07-15 12:45:28 | INFO | preprocessing_data | [yelp] Gate G1: PASS - Tất cả kiểm tra Gate G1 đều đạt
+2026-07-15 12:45:28 | INFO | preprocessing_data | [yelp] Saving output files
+2026-07-15 12:45:28 | INFO | preprocessing_data | Saving summary
+2026-07-15 12:45:28 | INFO | preprocessing_data | Saved E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\preprocessed\preprocessing_summary.json (264255 bytes)
+2026-07-15 12:45:28 | INFO | preprocessing_data | Saved E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\preprocessed\preprocessing_summary.md (2213 bytes)
+2026-07-15 12:45:28 | INFO | preprocessing_data | Gate G1 overall: PASS
+2026-07-15 12:45:28 | INFO | preprocessing_data | Finished preprocessing

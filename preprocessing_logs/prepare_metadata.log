@@ -1,0 +1,77 @@
+2026-07-15 11:20:27 | INFO | ========== BẮT ĐẦU PREPARE METADATA ==========
+2026-07-15 11:20:27 | INFO | File log tiền xử lý: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\preprocessing_logs\prepare_metadata.log
+2026-07-15 11:20:27 | INFO | Project root: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL
+2026-07-15 11:20:27 | INFO | Output directory: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata
+2026-07-15 11:20:27 | INFO | Amazon mapping: 91599 item từ E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\dataset\amazon-book\item_list.txt
+2026-07-15 11:20:27 | INFO | Đọc Amazon2014: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\amazon\2014\meta_Books.json
+2026-07-15 11:20:46 | INFO | Amazon2014: 1000000 dòng, 44885 item khớp
+2026-07-15 11:20:59 | INFO | Amazon2014: 2000000 dòng, 74400 item khớp
+2026-07-15 11:21:08 | INFO | Hoàn tất Amazon2014: 2370585 dòng, 91599 record khớp, 0 dòng không nhận dạng/lỗi
+2026-07-15 11:21:08 | INFO | Đọc Amazon2018: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\amazon\2018\meta_Books.json
+2026-07-15 11:21:22 | INFO | Amazon2018: 1000000 dòng, 30949 item khớp
+2026-07-15 11:21:33 | INFO | Amazon2018: 2000000 dòng, 48926 item khớp
+2026-07-15 11:21:41 | INFO | Hoàn tất Amazon2018: 2934949 dòng, 56003 record khớp, 0 dòng không nhận dạng/lỗi
+2026-07-15 11:21:41 | INFO | Đọc Amazon2023: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\amazon\2023\meta_Books.jsonl
+2026-07-15 11:22:06 | INFO | Amazon2023: 1000000 dòng, 19821 item khớp
+2026-07-15 11:22:35 | INFO | Amazon2023: 2000000 dòng, 39252 item khớp
+2026-07-15 11:23:01 | INFO | Amazon2023: 3000000 dòng, 57799 item khớp
+2026-07-15 11:23:23 | INFO | Amazon2023: 4000000 dòng, 68368 item khớp
+2026-07-15 11:23:31 | INFO | Hoàn tất Amazon2023: 4448181 dòng, 69162 record khớp, 0 dòng không nhận dạng/lỗi
+2026-07-15 11:23:33 | INFO | Ghi JSON: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\merged_metadata_amazon.json
+2026-07-15 11:23:45 | INFO | Đã ghi E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\merged_metadata_amazon.json (444528634 byte)
+2026-07-15 11:23:45 | INFO | Ghi JSON: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\item2category_amazon.json
+2026-07-15 11:23:46 | INFO | Đã ghi E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\item2category_amazon.json (17964840 byte)
+2026-07-15 11:23:46 | INFO | Ghi JSON: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\merge_decisions_amazon.json
+2026-07-15 11:23:48 | INFO | Đã ghi E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\merge_decisions_amazon.json (21457773 byte)
+2026-07-15 11:23:48 | INFO | Ghi JSON: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\merge_summary_amazon.json
+2026-07-15 11:23:48 | INFO | Đã ghi E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\merge_summary_amazon.json (362 byte)
+2026-07-15 11:23:48 | INFO | Amazon coverage: 100.0000% (91599/91599)
+2026-07-15 11:23:51 | INFO | Yelp mapping: 38048 item từ E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\dataset\yelp2018\item_list.txt
+2026-07-15 11:23:51 | INFO | Đọc Yelp2018 bằng cột ITEM: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\yelp\2018\Yelp2018.item
+2026-07-15 11:23:53 | INFO | Hoàn tất Yelp2018: 174567 dòng, 36729 record khớp
+2026-07-15 11:23:53 | INFO | Đọc Yelp2021 bằng cột ITEM: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\yelp\2021\Yelp2021.item
+2026-07-15 11:23:55 | INFO | Hoàn tất Yelp2021: 160585 dòng, 2 record khớp
+2026-07-15 11:23:55 | INFO | Đọc Yelp2022 bằng cột ITEM: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\yelp\2022\Yelp2022.item
+2026-07-15 11:23:56 | INFO | Hoàn tất Yelp2022: 150346 dòng, 2 record khớp
+2026-07-15 11:23:56 | INFO | Ghi JSON: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\merged_metadata_yelp.json
+2026-07-15 11:23:59 | INFO | Đã ghi E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\merged_metadata_yelp.json (27492573 byte)
+2026-07-15 11:23:59 | INFO | Ghi JSON: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\item2category_yelp.json
+2026-07-15 11:24:00 | INFO | Đã ghi E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\item2category_yelp.json (5634957 byte)
+2026-07-15 11:24:00 | INFO | Ghi JSON: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\merge_decisions_yelp.json
+2026-07-15 11:24:01 | INFO | Đã ghi E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\merge_decisions_yelp.json (8590937 byte)
+2026-07-15 11:24:01 | INFO | Ghi JSON: E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\merge_summary_yelp.json
+2026-07-15 11:24:01 | INFO | Đã ghi E:\Codebase_ID-GRec\ID-GRec-verify-TaxPro-CL\metadata\merge_summary_yelp.json (365 byte)
+2026-07-15 11:24:01 | INFO | Yelp coverage: 96.5333% (36729/38048)
+[
+  {
+    "domain": "amazon",
+    "total_items": 91599,
+    "coverage": 1.0,
+    "coverage_percent": 100.0,
+    "matched_items": 91599,
+    "missing_items": 0,
+    "selected_from_2014": 21030,
+    "selected_from_2018": 3843,
+    "selected_from_2021": 0,
+    "selected_from_2022": 0,
+    "selected_from_2023": 66726,
+    "average_taxonomy_depth": 3.382602,
+    "average_num_paths": 1.901909
+  },
+  {
+    "domain": "yelp",
+    "total_items": 38048,
+    "coverage": 0.96533326,
+    "coverage_percent": 96.5333,
+    "matched_items": 36729,
+    "missing_items": 1319,
+    "selected_from_2014": 0,
+    "selected_from_2018": 36725,
+    "selected_from_2021": 2,
+    "selected_from_2022": 2,
+    "selected_from_2023": 0,
+    "average_taxonomy_depth": 0.999755,
+    "average_num_paths": 4.173569
+  }
+]
+2026-07-15 11:24:01 | INFO | ========== KẾT THÚC PREPARE METADATA ==========

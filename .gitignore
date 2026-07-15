@@ -1,0 +1,9 @@
+# Không push metadata của project mới
+metadata/
+
+preprocessed/
+preprocessed_logs/
+
+# Bỏ qua changelog
+CHANGELOG_VERIFY_TAXPRO_CL.md
+PROJECT_STRUCTURE.md
