@@ -37,6 +37,12 @@ def parse_args(argv=None):
         help="Override training_epochs for every model.",
     )
     parser.add_argument(
+        "--num-worker",
+        type=int,
+        default=2,
+        help="Number of negative-sampling workers for every model (default: 2).",
+    )
+    parser.add_argument(
         "--stop-on-error",
         action="store_true",
         help="Stop immediately when a model fails instead of trying the remaining models.",
@@ -59,6 +65,7 @@ def build_command(model, args):
         command.extend(("--gpu_id", str(args.gpu_id)))
     if args.epochs is not None:
         command.extend(("--epochs", str(args.epochs)))
+    command.extend(("--num_worker", str(args.num_worker)))
     return command
 
 

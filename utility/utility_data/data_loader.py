@@ -1,12 +1,32 @@
 import logging
 import os
 import warnings
+from concurrent.futures import ThreadPoolExecutor
 
 import numpy as np
 import scipy.sparse as sp
 from config_path.config_path import dataset_split_file
 
 warnings.filterwarnings("ignore")
+
+
+def _sample_negative_items(users, num_items, user_item_net, seed):
+    """Vectorized negative sampling for one worker-owned user chunk."""
+    if len(users) == 0:
+        return np.empty(0, dtype=np.int64)
+    positive_counts = np.diff(user_item_net.indptr)[users]
+    if np.any(positive_counts >= num_items):
+        raise ValueError("Cannot sample a negative item for a user connected to every item")
+
+    random_state = np.random.RandomState(seed)
+    negatives = random_state.randint(0, num_items, size=len(users)).astype(np.int64)
+    positive_mask = np.asarray(user_item_net[users, negatives]).reshape(-1) > 0
+    while np.any(positive_mask):
+        negatives[positive_mask] = random_state.randint(
+            0, num_items, size=int(positive_mask.sum())
+        )
+        positive_mask = np.asarray(user_item_net[users, negatives]).reshape(-1) > 0
+    return negatives
 
 
 class Data(object):
@@ -25,6 +45,8 @@ class Data(object):
         self.training_output_dir = None
         self.validation_history = []
         self.config = config
+        self.num_worker = max(1, int(config.get("num_worker", 2)))
+        self.logger.info("Negative sampling workers: %d", self.num_worker)
 
         self.load_data()
         if config:
@@ -128,19 +150,36 @@ class Data(object):
         return np.array(sample_list)
 
     def sample_data_to_train_all(self):
-        sample_list = []
-        for index in range(len(self.train_user)):
-            user = self.train_user[index]
-            positive_items = self.all_positive[user]
-            if len(positive_items) == 0:
-                continue
-            positive_item = self.train_item[index]
-            while True:
-                negative_item = np.random.randint(0, self.num_items)
-                if negative_item not in positive_items:
-                    break
-            sample_list.append([user, positive_item, negative_item])
-        return np.array(sample_list)
+        num_samples = len(self.train_user)
+        num_workers = min(self.num_worker, max(num_samples, 1))
+        index_chunks = np.array_split(np.arange(num_samples), num_workers)
+        worker_seeds = [int(np.random.randint(0, 2 ** 31 - 1)) for _ in index_chunks]
+
+        if num_workers == 1:
+            negative_chunks = [
+                _sample_negative_items(
+                    self.train_user[index_chunks[0]],
+                    self.num_items,
+                    self.user_item_net,
+                    worker_seeds[0],
+                )
+            ]
+        else:
+            with ThreadPoolExecutor(max_workers=num_workers) as executor:
+                futures = [
+                    executor.submit(
+                        _sample_negative_items,
+                        self.train_user[indices],
+                        self.num_items,
+                        self.user_item_net,
+                        worker_seed,
+                    )
+                    for indices, worker_seed in zip(index_chunks, worker_seeds)
+                ]
+                negative_chunks = [future.result() for future in futures]
+
+        negative_items = np.concatenate(negative_chunks)
+        return np.column_stack((self.train_user, self.train_item, negative_items))
 
     def get_user_pos_items(self, users):
         return [self.user_item_net[user].nonzero()[1] for user in users]
