@@ -32,7 +32,7 @@ MODEL_LIST = {
 }
 
 
-def configure_training_logging(model_name=None):
+def configure_training_logging(model_name=None, dataset_name=None):
     formatter = logging.Formatter(
         "%(asctime)s | %(levelname)s | %(module)s | %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
@@ -47,8 +47,8 @@ def configure_training_logging(model_name=None):
     root_logger.addHandler(console)
 
     log_path = None
-    if model_name is not None:
-        log_path = training_log_file(model_name)
+    if model_name is not None and dataset_name is not None:
+        log_path = training_log_file(model_name, dataset_name)
         log_path.parent.mkdir(parents=True, exist_ok=True)
         logfile = logging.FileHandler(log_path, mode="a", encoding="utf-8")
         logfile.setFormatter(formatter)
@@ -74,15 +74,15 @@ def main():
     try:
         preliminary_args = Parser.parse_model_args()
         model_name = select_model(preliminary_args, logger)
-        logger, log_path = configure_training_logging(model_name)
-        logger.info("Start Training")
-        logger.info("Training log: %s", log_path)
         config_path = model_config_file(model_name)
         config = tools.read_configuration(str(config_path), model_name)
         args = Parser.parse_args(config)
         args.model = model_name
         default_config = config
         config = Parser.apply_config_overrides(config, args)
+        logger, log_path = configure_training_logging(model_name, config["dataset"])
+        logger.info("Start Training")
+        logger.info("Training log: %s", log_path)
         for key in config:
             if config[key] != default_config[key]:
                 logger.info(

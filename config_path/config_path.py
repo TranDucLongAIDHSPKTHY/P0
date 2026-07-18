@@ -24,8 +24,8 @@ PREPROCESSED_DIR = PROJECT_ROOT / "preprocessed"
 
 
 PREPROCESSING_LOG_DIR = PROJECT_ROOT / "preprocessing_logs"
-TRAINING_LOG_DIR = PROJECT_ROOT / "training_logs"
 MODEL_OUTPUT_DIR = PROJECT_ROOT / "log"
+TRAINING_LOG_DIR = MODEL_OUTPUT_DIR
 RESULT_DIR = MODEL_OUTPUT_DIR
 CHECKPOINT_DIR = MODEL_OUTPUT_DIR
 CACHE_DIR = DATASET_VERIFY_DIR
@@ -156,8 +156,9 @@ def model_result_dir(model_name, dataset_name):
     return MODEL_OUTPUT_DIR / str(model_name) / str(dataset_name)
 
 
-def training_log_file(model_name):
-    return TRAINING_LOG_DIR / str(model_name) / TRAINING_LOG_FILE_NAME
+def training_log_file(model_name, dataset_name):
+    """Return the original ID-GRec per-model, per-dataset log path."""
+    return TRAINING_LOG_DIR / str(model_name) / (str(dataset_name) + ".log")
 
 
 def checkpoint_file(output_dir, checkpoint_kind):
