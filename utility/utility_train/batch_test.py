@@ -12,6 +12,9 @@ import utility.utility_function.metrics as metrics
 from config_path.config_path import checkpoint_file, result_file, temporary_file
 
 
+BEST_VALIDATION_K = 20
+
+
 def _serializable_metrics(result):
     if isinstance(result, list):
         return [_serializable_metrics(value) for value in result]
@@ -36,7 +39,10 @@ def _write_json_atomic(path, value):
         raise
 
 
-def _save_checkpoint(path, model, optimizer, epoch, validation_metrics, config):
+def _save_checkpoint(
+    path, model, optimizer, epoch, validation_metrics, config,
+    selection_metric, selection_value,
+):
     path = Path(path)
     path.parent.mkdir(parents=True, exist_ok=True)
     temporary = temporary_file(path)
@@ -45,6 +51,8 @@ def _save_checkpoint(path, model, optimizer, epoch, validation_metrics, config):
         "model_state_dict": model.state_dict(),
         "optimizer_state_dict": optimizer.state_dict() if optimizer is not None else None,
         "validation_metrics": _serializable_metrics(validation_metrics),
+        "selection_metric": selection_metric,
+        "selection_value": selection_value,
         "configuration": dict(config),
     }
     try:
@@ -61,27 +69,45 @@ def general_test(dataset, model, device, config, epoch, best_results, optimizer=
     logger = logger or logging.getLogger(__name__)
     result = Test(dataset, model, device, config, split="validation")
     output_dir = Path(dataset.training_output_dir)
-    primary_k = eval(config["top_K"])[0]
-    primary_value = float(result["recall"][0])
+    top_k = eval(config["top_K"])
+    if BEST_VALIDATION_K not in top_k:
+        raise ValueError(
+            "top_K must include {} for best validation selection".format(BEST_VALIDATION_K)
+        )
+    primary_k = BEST_VALIDATION_K
+    primary_index = top_k.index(primary_k)
+    primary_metric = "recall@{}".format(primary_k)
+    primary_value = float(result["recall"][primary_index])
 
     dataset.validation_history.append(
-        {"epoch": epoch + 1, "primary_metric": "recall@{}".format(primary_k),
-         "metrics": _serializable_metrics(result)}
+        {"epoch": epoch + 1, "primary_metric": primary_metric,
+         "primary_value": primary_value, "metrics": _serializable_metrics(result)}
     )
     _write_json_atomic(result_file(output_dir, "validation"), dataset.validation_history)
 
     last_path = checkpoint_file(output_dir, "last")
-    _save_checkpoint(last_path, model, optimizer, epoch + 1, result, config)
+    _save_checkpoint(
+        last_path, model, optimizer, epoch + 1, result, config,
+        primary_metric, primary_value,
+    )
     logger.info("Saving Checkpoint: last_model=%s", last_path)
 
-    improved = best_results.get("epoch", 0) == 0 or primary_value > float(best_results["recall"][0])
+    improved = (
+        best_results.get("epoch", 0) == 0
+        or primary_value > float(best_results.get("primary_value", float("-inf")))
+    )
     if improved:
         best_results["count"] = 0
         best_results["epoch"] = epoch + 1
         best_results["recall"] = result["recall"].copy()
         best_results["ndcg"] = result["ndcg"].copy()
+        best_results["primary_metric"] = primary_metric
+        best_results["primary_value"] = primary_value
         best_path = checkpoint_file(output_dir, "best_validation")
-        _save_checkpoint(best_path, model, optimizer, epoch + 1, result, config)
+        _save_checkpoint(
+            best_path, model, optimizer, epoch + 1, result, config,
+            primary_metric, primary_value,
+        )
         logger.info(
             "Best Validation Updated: epoch=%d recall@%d=%.8f",
             epoch + 1, primary_k, primary_value,
@@ -122,6 +148,8 @@ def final_test(dataset, model, device, config, logger=None):
         result = Test(dataset, model, device, config, split="test")
     serialized = {
         "best_validation_epoch": checkpoint.get("epoch"),
+        "selection_metric": checkpoint.get("selection_metric"),
+        "selection_value": checkpoint.get("selection_value"),
         "best_validation_metrics": checkpoint.get("validation_metrics"),
         "test_metrics": _serializable_metrics(result),
     }
