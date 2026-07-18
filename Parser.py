@@ -6,13 +6,28 @@ CLI_ALIASES = {
     "training_epochs": ("--epochs",),
 }
 
+DEFAULT_TRAINING_SEEDS = (42, 0, 1)
+
 
 def _base_parser(add_help=True):
     parser = argparse.ArgumentParser(description="ID-GRec", add_help=add_help)
 
     parser.add_argument("--seed_flag", type=bool, default=True, help="Fix random seed or not")
 
-    parser.add_argument("--seed", type=int, default=2024, help="random seed for init")
+    parser.add_argument(
+        "--seeds",
+        type=int,
+        nargs="+",
+        default=list(DEFAULT_TRAINING_SEEDS),
+        help="random seeds to run sequentially (default: 42 0 1)",
+    )
+
+    parser.add_argument(
+        "--seed",
+        type=int,
+        default=None,
+        help="run a single seed instead of --seeds (backward-compatible option)",
+    )
 
     parser.add_argument("--cuda", type=bool, default=True, help="use gpu or not")
 

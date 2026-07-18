@@ -10,11 +10,31 @@ logger = logging.getLogger(__name__)
 
 def set_seed(seed):
 
+    random.seed(seed)
     np.random.seed(seed)
     if torch.cuda.is_available():
         torch.cuda.manual_seed(seed)
         torch.cuda.manual_seed_all(seed)
     torch.manual_seed(seed)
+
+
+def format_duration(seconds):
+    """Format a duration as HH:MM:SS for stable console and file logs."""
+    total_seconds = max(0, int(round(float(seconds))))
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return "{:02d}:{:02d}:{:02d}".format(hours, minutes, seconds)
+
+
+def estimate_remaining_time(elapsed_seconds, completed_steps, total_steps):
+    """Estimate remaining time from the average duration of completed steps."""
+    completed_steps = int(completed_steps)
+    total_steps = int(total_steps)
+    if completed_steps <= 0:
+        return "--:--:--"
+    remaining_steps = max(total_steps - completed_steps, 0)
+    average_seconds = float(elapsed_seconds) / completed_steps
+    return format_duration(average_seconds * remaining_steps)
 
 
 def read_configuration(filename, model):

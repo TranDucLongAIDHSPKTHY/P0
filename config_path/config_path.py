@@ -152,13 +152,16 @@ def dataset_split_file(dataset_directory, split):
     return Path(dataset_directory) / names[split]
 
 
-def model_result_dir(model_name, dataset_name):
-    return MODEL_OUTPUT_DIR / str(model_name) / str(dataset_name)
+def model_result_dir(model_name, dataset_name, seed=None):
+    path = MODEL_OUTPUT_DIR / str(model_name) / str(dataset_name)
+    return path if seed is None else path / ("seed" + str(seed))
 
 
-def training_log_file(model_name, dataset_name):
-    """Return the original ID-GRec per-model, per-dataset log path."""
-    return TRAINING_LOG_DIR / str(model_name) / (str(dataset_name) + ".log")
+def training_log_file(model_name, dataset_name, seed=None):
+    """Return a dataset log path, isolated by seed when one is supplied."""
+    if seed is None:
+        return TRAINING_LOG_DIR / str(model_name) / (str(dataset_name) + ".log")
+    return model_result_dir(model_name, dataset_name, seed) / TRAINING_LOG_FILE_NAME
 
 
 def checkpoint_file(output_dir, checkpoint_kind):

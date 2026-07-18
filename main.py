@@ -32,7 +32,7 @@ MODEL_LIST = {
 }
 
 
-def configure_training_logging(model_name=None, dataset_name=None):
+def configure_training_logging(model_name=None, dataset_name=None, seed=None):
     formatter = logging.Formatter(
         "%(asctime)s | %(levelname)s | %(module)s | %(message)s",
         datefmt="%Y-%m-%d %H:%M:%S",
@@ -48,7 +48,7 @@ def configure_training_logging(model_name=None, dataset_name=None):
 
     log_path = None
     if model_name is not None and dataset_name is not None:
-        log_path = training_log_file(model_name, dataset_name)
+        log_path = training_log_file(model_name, dataset_name, seed)
         log_path.parent.mkdir(parents=True, exist_ok=True)
         logfile = logging.FileHandler(log_path, mode="a", encoding="utf-8")
         logfile.setFormatter(formatter)
@@ -67,22 +67,19 @@ def select_model(args, logger):
         logger.error("Input Error. Please select a valid implemented model identifier.")
 
 
-def main():
+def run_training_seed(model_name, args, config, default_config, device, seed):
     started_at = time()
     dataset = None
-    logger, _ = configure_training_logging()
+    args.seed = seed
+    logger, log_path = configure_training_logging(model_name, config["dataset"], seed)
+    logger.info(
+        "Start Training: model=%s dataset=%s seed=%d",
+        model_name,
+        config["dataset"],
+        seed,
+    )
+    logger.info("Training log: %s", log_path)
     try:
-        preliminary_args = Parser.parse_model_args()
-        model_name = select_model(preliminary_args, logger)
-        config_path = model_config_file(model_name)
-        config = tools.read_configuration(str(config_path), model_name)
-        args = Parser.parse_args(config)
-        args.model = model_name
-        default_config = config
-        config = Parser.apply_config_overrides(config, args)
-        logger, log_path = configure_training_logging(model_name, config["dataset"])
-        logger.info("Start Training")
-        logger.info("Training log: %s", log_path)
         for key in config:
             if config[key] != default_config[key]:
                 logger.info(
@@ -92,15 +89,13 @@ def main():
                     default_config[key],
                 )
 
-        if args.cuda:
-            os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu_id)
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         if args.seed_flag:
-            tools.set_seed(args.seed)
+            tools.set_seed(seed)
+        logger.info("Random seed: %d (enabled=%s)", seed, args.seed_flag)
 
         dataset_path = verified_dataset_dir(config["dataset"])
         dataset = data_loader.Data(str(dataset_path), config, logger=logger)
-        output_dir = model_result_dir(model_name, config["dataset"])
+        output_dir = model_result_dir(model_name, config["dataset"], seed)
         output_dir.mkdir(parents=True, exist_ok=True)
         dataset.training_output_dir = output_dir
 
@@ -123,11 +118,55 @@ def main():
         return 0
     except Exception:
         epoch = getattr(dataset, "current_epoch", "not started") if dataset is not None else "not started"
-        logger.exception("Training failed; epoch=%s", epoch)
+        logger.exception("Training failed; seed=%d epoch=%s", seed, epoch)
         return 1
     finally:
-        logger.info("Total Training Time: %.3f seconds", time() - started_at)
+        logger.info("Seed %d Training Time: %.3f seconds", seed, time() - started_at)
 
+
+def main():
+    started_at = time()
+    logger, _ = configure_training_logging()
+    try:
+        preliminary_args = Parser.parse_model_args()
+        model_name = select_model(preliminary_args, logger)
+        config_path = model_config_file(model_name)
+        default_config = tools.read_configuration(str(config_path), model_name)
+        args = Parser.parse_args(default_config)
+        args.model = model_name
+        config = Parser.apply_config_overrides(default_config, args)
+
+        if args.cuda:
+            os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu_id)
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        seeds = [args.seed] if args.seed is not None else list(args.seeds)
+        seeds = list(dict.fromkeys(seeds))
+        logger.info("Training seeds: %s", seeds)
+
+        failed_seeds = []
+        for seed in seeds:
+            result = run_training_seed(
+                model_name,
+                args,
+                config,
+                default_config,
+                device,
+                seed,
+            )
+            if result != 0:
+                failed_seeds.append(seed)
+
+        logger, _ = configure_training_logging()
+        if failed_seeds:
+            logger.error("Training failed for seeds: %s", failed_seeds)
+            return 1
+        logger.info("Training completed for seeds: %s", seeds)
+        return 0
+    except Exception:
+        logger.exception("Training setup failed")
+        return 1
+    finally:
+        logger.info("Total Multi-seed Training Time: %.3f seconds", time() - started_at)
 
 if __name__ == "__main__":
     sys.exit(main())

@@ -7,6 +7,8 @@ import utility.utility_function.tools as tools
 
 
 def universal_trainer(model, args, config, dataset, device, logger):
+    loop_started_at = time()
+    total_epochs = int(config["training_epochs"])
     model.to(device)
     Optim = torch.optim.Adam(model.parameters(), lr=float(config["learn_rate"]))
     logger.info("Optimizer Initialized: Adam lr=%s", config["learn_rate"])
@@ -17,7 +19,7 @@ def universal_trainer(model, args, config, dataset, device, logger):
         "ndcg": [0.0 for _ in eval(config["top_K"])],
         "stop": 0,
     }
-    for epoch in range(int(config["training_epochs"])):
+    for epoch in range(total_epochs):
         dataset.current_epoch = epoch + 1
         logger.info("Start Epoch: %d", epoch + 1)
         start_time = time()
@@ -55,6 +57,14 @@ def universal_trainer(model, args, config, dataset, device, logger):
         logger.info("End Epoch: %d training_time=%.3f", epoch + 1, elapsed)
         _, best_results = batch_test.general_test(
             dataset, model, device, config, epoch, best_results, Optim, logger
+        )
+        elapsed_total = time() - loop_started_at
+        logger.info(
+            "Epoch Progress: %d/%d elapsed=%s ETA=%s",
+            epoch + 1,
+            total_epochs,
+            tools.format_duration(elapsed_total),
+            tools.estimate_remaining_time(elapsed_total, epoch + 1, total_epochs),
         )
         if best_results["stop"] > 0:
             break

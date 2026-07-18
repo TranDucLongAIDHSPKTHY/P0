@@ -124,7 +124,9 @@ class Trainer():
         best_results['recall'] = [0. for _ in eval(self.config['top_K'])]
         best_results['ndcg'] = [0. for _ in eval(self.config['top_K'])]
 
-        for epoch in range(int(self.config['training_epochs'])):
+        loop_started_at = time()
+        total_epochs = int(self.config['training_epochs'])
+        for epoch in range(total_epochs):
             self.dataset.current_epoch = epoch + 1
             self.logger.info("Start Epoch: %d", epoch + 1)
             start_time = time()
@@ -188,6 +190,14 @@ class Trainer():
             _, best_results = batch_test.general_test(
                 self.dataset, self.model, self.device, self.config, epoch,
                 best_results, Optim, self.logger
+            )
+            elapsed_total = time() - loop_started_at
+            self.logger.info(
+                "Epoch Progress: %d/%d elapsed=%s ETA=%s",
+                epoch + 1,
+                total_epochs,
+                tools.format_duration(elapsed_total),
+                tools.estimate_remaining_time(elapsed_total, epoch + 1, total_epochs),
             )
 
         self.logger.info('Training loop completed.')
