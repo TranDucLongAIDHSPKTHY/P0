@@ -37,6 +37,15 @@ def estimate_remaining_time(elapsed_seconds, completed_steps, total_steps):
     return format_duration(average_seconds * remaining_steps)
 
 
+def should_run_validation(epoch, total_epochs, interval):
+    """Run validation at each interval boundary and always at the final epoch."""
+    interval = int(interval)
+    if interval <= 0:
+        raise ValueError("interval must be a positive integer")
+    completed_epoch = int(epoch) + 1
+    return completed_epoch % interval == 0 or completed_epoch == int(total_epochs)
+
+
 def read_configuration(filename, model):
     if not os.path.exists(filename):
         logger.error("The path does not have a configuration file for %s: %s", model, filename)

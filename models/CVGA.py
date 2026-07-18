@@ -117,6 +117,10 @@ class Trainer():
 
         loop_started_at = time()
         total_epochs = int(self.config['training_epochs'])
+        validation_interval = int(self.config.get('interval', 1))
+        if validation_interval <= 0:
+            raise ValueError("interval must be a positive integer")
+        self.logger.info("Validation interval: every %d epoch(s)", validation_interval)
         for epoch in range(total_epochs):
             self.dataset.current_epoch = epoch + 1
             self.logger.info("Start Epoch: %d", epoch + 1)
@@ -160,10 +164,11 @@ class Trainer():
 
             self.logger.info("Train Loss: epoch=%d loss=%s", epoch + 1, loss_strs)
             self.logger.info("End Epoch: %d training_time=%.3f", epoch + 1, end_time - start_time)
-            _, best_results = batch_test.general_test(
-                self.dataset, self.model, self.device, self.config, epoch,
-                best_results, Optim, self.logger
-            )
+            if tools.should_run_validation(epoch, total_epochs, validation_interval):
+                _, best_results = batch_test.general_test(
+                    self.dataset, self.model, self.device, self.config, epoch,
+                    best_results, Optim, self.logger
+                )
             elapsed_total = time() - loop_started_at
             self.logger.info(
                 "Epoch Progress: %d/%d elapsed=%s ETA=%s",

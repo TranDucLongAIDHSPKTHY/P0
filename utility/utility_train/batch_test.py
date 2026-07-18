@@ -12,8 +12,6 @@ import utility.utility_function.metrics as metrics
 from config_path.config_path import checkpoint_file, result_file, temporary_file
 
 
-BEST_VALIDATION_K = 20
-
 
 def _serializable_metrics(result):
     if isinstance(result, list):
@@ -70,11 +68,13 @@ def general_test(dataset, model, device, config, epoch, best_results, optimizer=
     result = Test(dataset, model, device, config, split="validation")
     output_dir = Path(dataset.training_output_dir)
     top_k = eval(config["top_K"])
-    if BEST_VALIDATION_K not in top_k:
+    primary_k = int(config["selection_K"])
+    if primary_k not in top_k:
         raise ValueError(
-            "top_K must include {} for best validation selection".format(BEST_VALIDATION_K)
+            "top_K must include selection_K={} for best validation selection".format(
+                primary_k
+            )
         )
-    primary_k = BEST_VALIDATION_K
     primary_index = top_k.index(primary_k)
     primary_metric = "recall@{}".format(primary_k)
     primary_value = float(result["recall"][primary_index])

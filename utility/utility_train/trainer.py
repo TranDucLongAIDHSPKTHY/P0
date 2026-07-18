@@ -9,9 +9,13 @@ import utility.utility_function.tools as tools
 def universal_trainer(model, args, config, dataset, device, logger):
     loop_started_at = time()
     total_epochs = int(config["training_epochs"])
+    validation_interval = int(config.get("interval", 1))
+    if validation_interval <= 0:
+        raise ValueError("interval must be a positive integer")
     model.to(device)
     Optim = torch.optim.Adam(model.parameters(), lr=float(config["learn_rate"]))
     logger.info("Optimizer Initialized: Adam lr=%s", config["learn_rate"])
+    logger.info("Validation interval: every %d epoch(s)", validation_interval)
 
     best_results = {
         "count": 0, "epoch": 0,
@@ -55,9 +59,10 @@ def universal_trainer(model, args, config, dataset, device, logger):
         )
         logger.info("Train Loss: epoch=%d loss=%s", epoch + 1, loss_strs)
         logger.info("End Epoch: %d training_time=%.3f", epoch + 1, elapsed)
-        _, best_results = batch_test.general_test(
-            dataset, model, device, config, epoch, best_results, Optim, logger
-        )
+        if tools.should_run_validation(epoch, total_epochs, validation_interval):
+            _, best_results = batch_test.general_test(
+                dataset, model, device, config, epoch, best_results, Optim, logger
+            )
         elapsed_total = time() - loop_started_at
         logger.info(
             "Epoch Progress: %d/%d elapsed=%s ETA=%s",
